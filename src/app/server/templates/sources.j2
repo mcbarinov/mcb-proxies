@@ -1,0 +1,97 @@
+{% extends "inc/base.j2" %}
+{% block content %}
+
+<div class="page-header">
+  <h2>sources</h2>
+  <sl-divider vertical></sl-divider>
+  <sl-button onclick="document.querySelector('#dialog-create').show()">create</sl-button>
+  <sl-button href="/api/sources/export">export</sl-button>
+  <sl-button onclick="document.querySelector('#dialog-import').show()">import</sl-button>
+</div>
+
+<sl-dialog id="dialog-create" label="create source">
+  <form method="POST" class="stack">
+    <sl-input type="text" name="id" placeholder="id" required></sl-input>
+    <sl-button type="submit" variant="primary">create</sl-button>
+  </form>
+</sl-dialog>
+
+<sl-dialog id="dialog-import" label="import sources">
+  <form method="POST" action="/sources/import" class="stack">
+    <sl-textarea name="toml" rows="10" placeholder="paste TOML here"></sl-textarea>
+    <sl-button type="submit" variant="primary">import</sl-button>
+  </form>
+</sl-dialog>
+
+<table>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>proxies</th>
+      <th>ok</th>
+      <th>live</th>
+      <th>entries</th>
+      <th>entries_url</th>
+      <th>default</th>
+      <th>checked_at</th>
+      <th>actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s in sources %}
+    <tr>
+      <td>{{ s.id }}</td>
+      <td>{{ stats.sources[s.id].all }}</td>
+      <td>{{ stats.sources[s.id].ok }}</td>
+      <td>{{ stats.sources[s.id].live }}</td>
+      <td>{{ s.entries | length }}</td>
+      <td>{{ s.entries_url | empty }}</td>
+      <td>{{ s.default_protocol or '' }}</td>
+      <td>{{ s.checked_at | dt }}</td>
+      <td>
+        <sl-dropdown>
+          <sl-button slot="trigger" caret>actions</sl-button>
+          <sl-menu>
+            <sl-menu-item><a href="/api-post/sources/{{ s.id }}/check">check</a></sl-menu-item>
+            <sl-menu-item><a href="/api/sources/{{ s.id }}">view</a></sl-menu-item>
+            <sl-menu-item><a onclick="document.querySelector('#dialog-entries-{{ s.id }}').show()">entries</a></sl-menu-item>
+            <sl-menu-item><a onclick="document.querySelector('#dialog-entries-url-{{ s.id }}').show()">entries_url</a></sl-menu-item>
+            <sl-menu-item><a onclick="document.querySelector('#dialog-default-{{ s.id }}').show()">default</a></sl-menu-item>
+            <sl-menu-item><a href="/api-delete/sources/{{ s.id }}" {{ confirm }}>delete</a></sl-menu-item>
+          </sl-menu>
+        </sl-dropdown>
+
+        <sl-dialog id="dialog-entries-{{ s.id }}" label="entries / {{ s.id }}">
+          <form method="POST" action="/sources/{{ s.id }}/entries" class="stack">
+            <sl-textarea name="entries" rows="10" value="{{ s.entries | join('\n') }}"></sl-textarea>
+            <sl-button type="submit" variant="primary">save</sl-button>
+          </form>
+        </sl-dialog>
+
+        <sl-dialog id="dialog-entries-url-{{ s.id }}" label="entries_url / {{ s.id }}">
+          <form method="POST" action="/sources/{{ s.id }}/entries_url" class="stack">
+            <sl-input type="text" name="entries_url" placeholder="url" value="{{ s.entries_url or '' }}"></sl-input>
+            <sl-button type="submit" variant="primary">save</sl-button>
+          </form>
+        </sl-dialog>
+
+        <sl-dialog id="dialog-default-{{ s.id }}" label="default / {{ s.id }}">
+          <form method="POST" action="/sources/{{ s.id }}/default" class="stack">
+            <sl-select name="protocol" value="{{ s.default_protocol or '' }}" placeholder="protocol" clearable>
+              {% for p in Protocol %}
+              <sl-option value="{{ p.value }}">{{ p.value }}</sl-option>
+              {% endfor %}
+            </sl-select>
+            <sl-input type="text" name="username" placeholder="username" value="{{ s.default_username or '' }}"></sl-input>
+            <sl-input type="text" name="password" placeholder="password" value="{{ s.default_password or '' }}"></sl-input>
+            <sl-input type="number" name="port" placeholder="port" value="{{ s.default_port or '' }}"></sl-input>
+            <sl-button type="submit" variant="primary">save</sl-button>
+          </form>
+        </sl-dialog>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

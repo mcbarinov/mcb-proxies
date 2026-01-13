@@ -1,0 +1,17 @@
+servers:
+  hosts:
+    "mm-base6-demo.example.net":
+      app_name: mm-base6-demo
+      domain: mm-base6-demo.example.net
+      app_image: ghcr.io/xxx/mm-base6-demo
+      db_password: secret
+      access_token: secret
+      letsencrypt_email: mail@spam.org
+
+  vars:
+    docker_registry: ghcr.io
+    docker_username: xxx
+    docker_password: secret
+    authorized_keys: |
+      ssh-ed25519 ********************* usr1
+      ssh-ed25519 ********************* usr2

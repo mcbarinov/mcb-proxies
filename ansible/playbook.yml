@@ -1,0 +1,6 @@
+---
+- name: Manage mcb-proxies app
+  hosts: servers
+  gather_facts: false
+  roles:
+    - local.mm.mm_base6

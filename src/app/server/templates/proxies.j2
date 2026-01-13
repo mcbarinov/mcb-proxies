@@ -1,0 +1,78 @@
+{% extends "inc/base.j2" %}
+{% block content %}
+
+<div class="page-header">
+  <h2>proxies / {{ proxies | length }}</h2>
+  <sl-divider vertical></sl-divider>
+
+  <form class="inline">
+    <sl-select name="source" placeholder="source" value="{{ query.source }}" clearable>
+      {% for s in sources %}
+      <sl-option value="{{ s }}">{{ s }}</sl-option>
+      {% endfor %}
+    </sl-select>
+    <sl-select name="status" placeholder="status" value="{{ query.status }}" clearable>
+      {% for s in Status %}
+      <sl-option value="{{ s.value }}">{{ s.value }}</sl-option>
+      {% endfor %}
+    </sl-select>
+    <sl-select name="protocol" placeholder="protocol" value="{{ query.protocol }}" clearable>
+      {% for p in Protocol %}
+      <sl-option value="{{ p.value }}">{{ p.value }}</sl-option>
+      {% endfor %}
+    </sl-select>
+    <sl-button type="submit">filter</sl-button>
+  </form>
+</div>
+
+<table class="sortable">
+  <thead>
+    <tr>
+      <th>endpoint</th>
+      <th>external_ip</th>
+      <th>status</th>
+      <th>source</th>
+      <th>protocol</th>
+      <th>ok</th>
+      <th>down</th>
+      <th>checked_at</th>
+      <th>actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in proxies %}
+    <tr>
+      <td>{{ p.endpoint }}</td>
+      <td>
+        {% if p.external_ip %}
+          {% if p.gateway %}
+            <span style="color: orange;" title="gateway proxy (external IP differs from endpoint)">{{ p.external_ip }}</span>
+          {% elif p.gateway is false %}
+            <span style="color: green;" title="direct proxy (external IP matches endpoint)">{{ p.external_ip }}</span>
+          {% else %}
+            {{ p.external_ip }}
+          {% endif %}
+        {% endif %}
+      </td>
+      <td>{{ p.status.value }}</td>
+      <td>{{ p.source }}</td>
+      <td>{{ p.protocol.value }}</td>
+      <td>{{ p.history_ok_count }}</td>
+      <td>{{ p.history_down_count }}</td>
+      <td>{{ p.checked_at | dt }}</td>
+      <td>
+        <sl-dropdown>
+          <sl-button slot="trigger" caret>actions</sl-button>
+          <sl-menu>
+            <sl-menu-item><a href="/api-post/proxies/{{ p.id }}/check">check</a></sl-menu-item>
+            <sl-menu-item><a href="/api/proxies/{{ p.id }}/url">url</a></sl-menu-item>
+            <sl-menu-item><a href="/api/proxies/{{ p.id }}">view</a></sl-menu-item>
+          </sl-menu>
+        </sl-dropdown>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
