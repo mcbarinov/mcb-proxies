@@ -26,7 +26,7 @@ class ProxyRouter(AppView):
         format_: Annotated[str, Query(alias="format")] = "text",
     ) -> Response:
         """Get live proxies with optional filtering."""
-        allowed = {"sources", "unique_ip", "protocol", "exclude_gateway", "format", "access_token"}
+        allowed = {"sources", "unique_ip", "protocol", "exclude_gateway", "format", "access_token", "access-token"}
         unknown = set(request.query_params.keys()) - allowed
         if unknown:
             raise HTTPException(status_code=422, detail=f"Unknown query parameters: {unknown}")
