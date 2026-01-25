@@ -3,25 +3,26 @@
 
 <div class="page-header">
   <h2>proxies / {{ proxies | length }}</h2>
-  <sl-divider vertical></sl-divider>
-
-  <form class="inline">
-    <sl-select name="source" placeholder="source" value="{{ query.source }}" clearable>
+  <form>
+    <select name="source" placeholder="source" value="{{ query.source }}">
+      <option value="">-- source --</option>
       {% for s in sources %}
-      <sl-option value="{{ s }}">{{ s }}</sl-option>
+      <option value="{{ s }}">{{ s }}</option>
       {% endfor %}
-    </sl-select>
-    <sl-select name="status" placeholder="status" value="{{ query.status }}" clearable>
+    </select>
+    <select name="status" placeholder="status" value="{{ query.status }}">
+      <option value="">-- status --</option>
       {% for s in Status %}
-      <sl-option value="{{ s.value }}">{{ s.value }}</sl-option>
+      <option value="{{ s.value }}">{{ s.value }}</option>
       {% endfor %}
-    </sl-select>
-    <sl-select name="protocol" placeholder="protocol" value="{{ query.protocol }}" clearable>
+    </select>
+    <select name="protocol" placeholder="protocol" value="{{ query.protocol }}">
+      <option value="">-- protocol --</option>
       {% for p in Protocol %}
-      <sl-option value="{{ p.value }}">{{ p.value }}</sl-option>
+      <option value="{{ p.value }}">{{ p.value }}</option>
       {% endfor %}
-    </sl-select>
-    <sl-button type="submit">filter</sl-button>
+    </select>
+    <button type="submit" class="outline">filter</button>
   </form>
 </div>
 
@@ -45,13 +46,14 @@
       <td>{{ p.endpoint }}</td>
       <td>
         {% if p.external_ip %}
-          {% if p.gateway %}
-            <span style="color: orange;" title="gateway proxy (external IP differs from endpoint)">{{ p.external_ip }}</span>
-          {% elif p.gateway is false %}
-            <span style="color: green;" title="direct proxy (external IP matches endpoint)">{{ p.external_ip }}</span>
-          {% else %}
-            {{ p.external_ip }}
-          {% endif %}
+        {% if p.gateway %}
+        <span style="color: orange;" title="gateway proxy (external IP differs from endpoint)">{{ p.external_ip
+          }}</span>
+        {% elif p.gateway is false %}
+        <span style="color: green;" title="direct proxy (external IP matches endpoint)">{{ p.external_ip }}</span>
+        {% else %}
+        {{ p.external_ip }}
+        {% endif %}
         {% endif %}
       </td>
       <td>{{ p.status.value }}</td>
@@ -61,14 +63,14 @@
       <td>{{ p.history_down_count }}</td>
       <td>{{ p.checked_at | dt }}</td>
       <td>
-        <sl-dropdown>
-          <sl-button slot="trigger" caret>actions</sl-button>
-          <sl-menu>
-            <sl-menu-item><a href="/api-post/proxies/{{ p.id }}/check">check</a></sl-menu-item>
-            <sl-menu-item><a href="/api/proxies/{{ p.id }}/url">url</a></sl-menu-item>
-            <sl-menu-item><a href="/api/proxies/{{ p.id }}">view</a></sl-menu-item>
-          </sl-menu>
-        </sl-dropdown>
+        <details class="dropdown">
+          <summary>actions</summary>
+          <ul>
+            <li><a href="/api-post/proxies/{{ p.id }}/check">check</a></li>
+            <li><a href="/api/proxies/{{ p.id }}/url">url</a></li>
+            <li><a href="/api/proxies/{{ p.id }}">view</a></li>
+          </ul>
+        </details>
       </td>
     </tr>
     {% endfor %}

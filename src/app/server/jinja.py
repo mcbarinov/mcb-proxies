@@ -1,3 +1,5 @@
+from typing import override
+
 from markupsafe import Markup
 from mm_base6 import JinjaConfig
 
@@ -8,9 +10,9 @@ from app.core.types import AppCore
 class AppJinjaConfig(JinjaConfig[AppCore]):
     filters = {}
     globals = {"Status": Status, "Protocol": Protocol}
-    header_info_new_line = False
 
-    async def header(self) -> Markup:
+    @override
+    async def header_status(self) -> Markup:
         stats = await self.core.services.source.calc_stats()
         return Markup(
             "<span title='all proxies'>{}</span> / <span title='ok proxies'>{}</span> / <span title='live proxies'>{}</span>"

@@ -49,8 +49,8 @@ docker-upload: docker-build
 
 publish: docker-upload
 	cd ansible;	ansible-playbook -i hosts.yml --extra-vars="app_version={{version}}" -t publish playbook.yml
-	git tag -a 'v{{version}}' -m 'v{{version}}'
-	git push origin v{{version}}
+	# git tag -a 'v{{version}}' -m 'v{{version}}'
+	# git push origin v{{version}}
 
 dev:
     uv run python -m watchfiles --sigint-timeout=5 --grace-period=5  --sigkill-timeout=5 "python -m app.main" src
