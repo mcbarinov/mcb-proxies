@@ -4,22 +4,22 @@
 <div class="page-header">
   <h2>proxies / {{ proxies | length }}</h2>
   <form>
-    <select name="source" placeholder="source" value="{{ query.source }}">
+    <select name="source">
       <option value="">-- source --</option>
       {% for s in sources %}
-      <option value="{{ s }}">{{ s }}</option>
+      {{option(s, query.source)}}
       {% endfor %}
     </select>
-    <select name="status" placeholder="status" value="{{ query.status }}">
+    <select name="status">
       <option value="">-- status --</option>
       {% for s in Status %}
-      <option value="{{ s.value }}">{{ s.value }}</option>
+      {{option(s.value, query.status)}}
       {% endfor %}
     </select>
-    <select name="protocol" placeholder="protocol" value="{{ query.protocol }}">
+    <select name="protocol">
       <option value="">-- protocol --</option>
       {% for p in Protocol %}
-      <option value="{{ p.value }}">{{ p.value }}</option>
+      {{option(p.value, query.protocol)}}
       {% endfor %}
     </select>
     <button type="submit" class="outline">filter</button>

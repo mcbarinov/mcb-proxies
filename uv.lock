@@ -141,7 +141,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "mm-base6", specifier = "~=0.8.0" },
+    { name = "mm-base6", specifier = "~=0.8.2" },
     { name = "mm-proxy", specifier = "~=0.0.2" },
 ]
 
@@ -577,7 +577,7 @@ wheels = [
 
 [[package]]
 name = "mm-base6"
-version = "0.8.0"
+version = "0.8.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
@@ -593,9 +593,9 @@ dependencies = [
     { name = "tomlkit" },
     { name = "uvloop" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c0/5e/976cae1e6770f04013094ea1a946ff091d8cd3dc548dad410bdcfba4ed8e/mm_base6-0.8.0.tar.gz", hash = "sha256:28498d80234dfd8a8518a02b93372b9d14a91cd7fa71ba59c61fc40de00cc192", size = 178808, upload-time = "2026-01-25T09:22:25.559Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/21/97/c988eb2f42a0fe0d16cf5dca8e44a217411bb12177621c514151fd4373ec/mm_base6-0.8.2.tar.gz", hash = "sha256:3daac6a45e5a139b4770bf16b0b35055c0084a1781d2da55226eed4bcf2242e8", size = 179178, upload-time = "2026-01-25T13:37:16.364Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/58/b6/fd7eaaf16dca8a10840dd1a70b78cec94f98e664bbaf789448bee9ea0f48/mm_base6-0.8.0-py3-none-any.whl", hash = "sha256:721a9f86730e38ab925c25fb4c8e67adb77b0f57e7abac7a0f9f71c7e8e2fa47", size = 49386, upload-time = "2026-01-25T09:22:23.907Z" },
+    { url = "https://files.pythonhosted.org/packages/d2/a5/005f06494808ded8e758815f904696b76b71ecfe49d50ab6336df583087c/mm_base6-0.8.2-py3-none-any.whl", hash = "sha256:41a8fcabe7d094a84689d0409759aa389e671f9e58f54ac066cbd1d3d9b4472c", size = 49763, upload-time = "2026-01-25T13:37:14.919Z" },
 ]
 
 [[package]]

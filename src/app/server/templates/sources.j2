@@ -4,18 +4,15 @@
 <div class="page-header">
   <h2>sources</h2>
   <nav>
-    <a onclick="openDialog('dialog-create')">create</a>
+    <a onclick="dialog('dialog-create')">create</a>
     <a href="/api/sources/export">export</a>
-    <a onclick="openDialog('dialog-import')">import</a>
+    <a onclick="dialog('dialog-import')">import</a>
   </nav>
 </div>
 
 
-<dialog id="dialog-create">
+<dialog id="dialog-create" label="create source">
   <article>
-    <header>
-      <h4>create source</h4>
-    </header>
     <form method="POST" class="stack">
       <fieldset role="group">
         <input type="text" name="id" placeholder="id" required></input>
@@ -25,11 +22,8 @@
   </article>
 </dialog>
 
-<dialog id="dialog-import">
+<dialog id="dialog-import" label="import sources">
   <article>
-    <header>
-      <h4>import sources</h4>
-    </header>
     <form method="POST" action="/sources/import" class="stack">
       <textarea name="toml" rows="10" placeholder="paste TOML here"></textarea>
       <button type="submit" class="primary">import</button>
@@ -68,52 +62,44 @@
           <ul>
             <li><a href="/api-post/sources/{{ s.id }}/check">check</a></li>
             <li><a href="/api/sources/{{ s.id }}">view</a></li>
-            <li><a onclick="openDialog('dialog-entries-{{ s.id }}')">entries</a></li>
-            <li><a onclick="openDialog('dialog-entries-url-{{ s.id }}')">entries_url</a></li>
-            <li><a onclick="openDialog('dialog-default-{{ s.id }}')">default</a></li>
+            <li><a onclick="dialog('dialog-entries-{{ s.id }}')">entries</a></li>
+            <li><a onclick="dialog('dialog-entries-url-{{ s.id }}')">entries_url</a></li>
+            <li><a onclick="dialog('dialog-default-{{ s.id }}')">default</a></li>
             <li><a href="/api-delete/sources/{{ s.id }}" {{ confirm }}>delete</a></li>
           </ul>
         </details>
 
-        <dialog id="dialog-entries-{{ s.id }}">
+        <dialog id="dialog-entries-{{ s.id }}" label="entries / {{ s.id }}">
           <article>
-            <header>
-              <h4>entries / {{ s.id }}</h4>
-            </header>
             <form method="POST" action="/sources/{{ s.id }}/entries" class="stack">
               <textarea name="entries" rows="10" value="{{ s.entries | join('\n') }}"></textarea>
-              <button type="submit" variant="primary">save</button>
+              <button type="submit">save</button>
             </form>
           </article>
         </dialog>
 
-        <dialog id="dialog-entries-url-{{ s.id }}">
+        <dialog id="dialog-entries-url-{{ s.id }}" label="entries_url / {{ s.id }}">
           <article>
-            <header>
-              <h4>entries_url / {{ s.id }}</h4>
-            </header>
             <form method="POST" action="/sources/{{ s.id }}/entries_url" class="stack">
               <input type="text" name="entries_url" placeholder="url" value="{{ s.entries_url or '' }}">
-              <button type="submit" variant="primary">save</button>
+              <button type="submit">save</button>
             </form>
           </article>
         </dialog>
 
-        <dialog id="dialog-default-{{ s.id }}">
+        <dialog id="dialog-default-{{ s.id }}" label="default / {{ s.id }}">
           <article>
-            <header>
-              <h4>default / {{ s.id }}</h4>
-            </header>
             <form method="POST" action="/sources/{{ s.id }}/default" class="stack">
-              <select name="protocol" value="{{ s.default_protocol or '' }}" placeholder="protocol" clearable>
+              <select name="protocol" title="protocol">
+                <option value="">-- protocol --</option>
                 {% for p in Protocol %}
-                <option value="{{ p.value }}">{{ p.value }}</option>
+                {{option(p.value, s.default_protocol)}}
                 {% endfor %}
               </select>
               <input type="text" name="username" placeholder="username" value="{{ s.default_username or '' }}">
               <input type="text" name="password" placeholder="password" value="{{ s.default_password or '' }}">
               <input type="number" name="port" placeholder="port" value="{{ s.default_port or '' }}">
-              <button type="submit" variant="primary">save</button>
+              <button type="submit">save</button>
             </form>
           </article>
         </dialog>
