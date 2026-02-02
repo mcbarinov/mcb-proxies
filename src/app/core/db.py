@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from bson import ObjectId
 from mm_base6 import BaseDb
 from mm_mongo import AsyncMongoCollection, MongoModel
-from mm_std import utc_delta, utc_now
+from mm_std import utc_now, utc_now_offset
 from pydantic import Field, field_validator
 
 
@@ -161,9 +161,9 @@ class Proxy(MongoModel[ObjectId]):
         - Proxy was working before but hasn't been OK for 1 hour
         - Proxy was never OK and exists for more than 1 hour
         """
-        if self.last_ok_at and self.last_ok_at < utc_delta(hours=-1):
+        if self.last_ok_at and self.last_ok_at < utc_now_offset(hours=-1):
             return True
-        return bool(self.last_ok_at is None and self.created_at < utc_delta(hours=-1))
+        return bool(self.last_ok_at is None and self.created_at < utc_now_offset(hours=-1))
 
     @classmethod
     def new(cls, source: str, url: str) -> Proxy:

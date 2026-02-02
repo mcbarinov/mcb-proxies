@@ -1,19 +1,25 @@
-# Claude Guidelines
+# AI Agent Start Guide
 
-## Critical Guidelines
+## Critical: Language
+RESPOND IN ENGLISH. Always. No exceptions.
+User's language does NOT determine your response language.
+Only switch if user EXPLICITLY requests it (e.g., "respond in {language}").
+Language switching applies ONLY to chat. All code, comments, commit messages, and files must ALWAYS be in English — no exceptions.
 
-1. **Always communicate in English** - Regardless of the language the user speaks, always respond in English. All code, comments, and documentation must be in English.
 
-2. **Minimal documentation** - Only add comments/documentation when it simplifies understanding and isn't obvious from the code itself. Keep it strictly relevant and concise.
+## Mandatory Rules (external)
+These files are REQUIRED. Read them fully and follow all rules.
+- `~/.claude/shared-rules/general.md`
+- `~/.claude/shared-rules/python.md`
 
-3. **Critical thinking** - Always critically evaluate user ideas. Users can make mistakes. Think first about whether the user's idea is good before implementing.
+## Project Reading (context)
+These files are REQUIRED for project understanding.
+- `README.md` - Project overview and API
 
-4. **Lint after changes** - After making code changes, always run `just lint` to verify code quality and fix any linter issues.
+## Preflight (mandatory)
+Before your first response:
+1. Read all files listed above.
+2. Do not answer until all are read.
+3. In your first reply, list every file you have read from this document.
 
-5. **No disabling linter rules** - Never use special disabling comments (like `# noqa`, `# type: ignore`, `# ruff: noqa`, etc.) to turn off linter rules without explicit permission. If you believe a rule should be disabled, ask first.
-
-## Required Reading
-
-Before working on this codebase, read these documents:
-1. `README.md` - Project overview
-2. `ADR.md` - Architectural decisions and rationale
+Failure to follow this protocol is considered an error.

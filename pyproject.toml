@@ -1,11 +1,11 @@
 [project]
 name = "app"
-version = "0.0.1"
+version = "0.0.2"
 description = ""
 requires-python = ">=3.14"
 dependencies = [
-    "mm-base6~=0.8.2",
-    "mm-proxy~=0.0.2",
+    "mm-base6~=0.9.0",
+    "mm-proxy~=0.1.0",
 ]
 
 [build-system]

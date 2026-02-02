@@ -5,9 +5,9 @@ from typing import override
 import pydash
 from bson import ObjectId
 from mm_base6 import Service
-from mm_concurrency import async_synchronized
+from mm_concurrency import async_mutex
 from mm_proxy import check_proxy_ip_via_public_services
-from mm_std import utc_delta, utc_now
+from mm_std import utc_now, utc_now_offset
 
 from app.core.db import Protocol, Proxy, Status
 from app.core.types import AppCore
@@ -24,9 +24,9 @@ class ProxyService(Service[AppCore]):
 
     @override
     def configure_scheduler(self) -> None:
-        self.core.scheduler.add_task("proxy_check", 1, self.core.services.proxy.check_next)
+        self.core.scheduler.add("proxy_check", 1, self.core.services.proxy.check_next)
 
-    @async_synchronized
+    @async_mutex
     async def check_next(self) -> None:
         """Check batch of proxies: first unchecked, then oldest checked (>5 min ago)."""
         if not self.core.settings.proxies_check:
@@ -37,7 +37,7 @@ class ProxyService(Service[AppCore]):
         # Then: oldest checked (more than 5 minutes ago)
         if len(proxies) < limit:
             proxies += await self.core.db.proxy.find(
-                {"checked_at": {"$lt": utc_delta(minutes=-5)}}, "checked_at", limit=limit - len(proxies)
+                {"checked_at": {"$lt": utc_now_offset(minutes=-5)}}, "checked_at", limit=limit - len(proxies)
             )
 
         async with asyncio.TaskGroup() as tg:
@@ -78,7 +78,7 @@ class ProxyService(Service[AppCore]):
         """Get proxies that were OK within live_last_ok_minutes."""
         query: dict[str, object] = {
             "status": Status.OK,
-            "last_ok_at": {"$gt": utc_delta(minutes=-1 * self.core.settings.live_last_ok_minutes)},
+            "last_ok_at": {"$gt": utc_now_offset(minutes=-1 * self.core.settings.live_last_ok_minutes)},
         }
         if sources:
             query["source"] = {"$in": sources}

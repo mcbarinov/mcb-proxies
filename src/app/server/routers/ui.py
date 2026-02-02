@@ -5,7 +5,7 @@ from fastapi.params import Query
 from fastapi.responses import HTMLResponse
 from mm_base6 import cbv, redirect
 from mm_proxy import parse_proxy_list
-from mm_std import replace_empty_dict_entries
+from mm_std import compact_dict
 from starlette.responses import RedirectResponse
 
 from app.core.db import Protocol
@@ -43,7 +43,7 @@ class PageRouter(AppView):
         protocol: Annotated[str | None, Query()] = None,
     ) -> HTMLResponse:
         """Render proxies list page."""
-        query = replace_empty_dict_entries({"source": source, "status": status, "protocol": protocol})
+        query = compact_dict({"source": source, "status": status, "protocol": protocol})
         proxies = await self.core.db.proxy.find(query, "url")
         sources = [s.id for s in await self.core.db.source.find({}, "_id")]
         return await self.render.html("proxies.j2", proxies=proxies, sources=sources, query=query)
