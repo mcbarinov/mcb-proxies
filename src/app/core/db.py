@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 from bson import ObjectId
 from mm_base6 import BaseDb
 from mm_mongo import AsyncMongoCollection, MongoModel
-from mm_std import utc_now, utc_now_offset
+from mm_std import utc
 from pydantic import Field, field_validator
 
 
@@ -44,7 +44,7 @@ class Source(MongoModel[str]):
     entries_url: str | None = Field(default=None, description="URL to fetch proxy list from")
     entries: list[str] = Field(default_factory=list, description="Manual list of proxy entries")
 
-    created_at: datetime = Field(default_factory=utc_now, description="When this source was created")
+    created_at: datetime = Field(default_factory=utc, description="When this source was created")
     checked_at: datetime | None = Field(default=None, description="Last time entries_url was fetched")
 
     @field_validator("entries_url", mode="after")
@@ -116,7 +116,7 @@ class Proxy(MongoModel[ObjectId]):
     external_ip: str | None = Field(default=None, description="IP visible to external world when using this proxy")
     status: Status = Field(default=Status.UNKNOWN, description="Current health status")
     protocol: Protocol = Field(description="Proxy protocol (HTTP or SOCKS5)")
-    created_at: datetime = Field(default_factory=utc_now, description="When this proxy was added")
+    created_at: datetime = Field(default_factory=utc, description="When this proxy was added")
     checked_at: datetime | None = Field(default=None, description="Last connectivity check time")
     last_ok_at: datetime | None = Field(default=None, description="Last successful check time")
     check_history: list[bool] = Field(
@@ -161,9 +161,9 @@ class Proxy(MongoModel[ObjectId]):
         - Proxy was working before but hasn't been OK for 1 hour
         - Proxy was never OK and exists for more than 1 hour
         """
-        if self.last_ok_at and self.last_ok_at < utc_now_offset(hours=-1):
+        if self.last_ok_at and self.last_ok_at < utc(hours=-1):
             return True
-        return bool(self.last_ok_at is None and self.created_at < utc_now_offset(hours=-1))
+        return bool(self.last_ok_at is None and self.created_at < utc(hours=-1))
 
     @classmethod
     def new(cls, source: str, url: str) -> Proxy:

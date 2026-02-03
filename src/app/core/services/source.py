@@ -9,7 +9,7 @@ from mm_concurrency import async_mutex
 from mm_http import http_request
 from mm_mongo import MongoDeleteResult, MongoInsertOneResult
 from mm_proxy import parse_proxy_list
-from mm_std import utc_now, utc_now_offset
+from mm_std import utc
 from pydantic import BaseModel
 from pymongo.errors import BulkWriteError
 
@@ -42,7 +42,7 @@ class SourceService(Service[AppCore]):
 
     async def calc_stats(self) -> Stats:
         """Calculate proxy statistics for all sources."""
-        live_threshold = utc_now_offset(minutes=-1 * self.core.settings.live_last_ok_minutes)
+        live_threshold = utc(minutes=-1 * self.core.settings.live_last_ok_minutes)
 
         all_uniq_ip = await self.core.db.proxy.collection.distinct("external_ip", {"external_ip": {"$ne": None}})
         ok_uniq_ip = await self.core.db.proxy.collection.distinct(
@@ -116,7 +116,7 @@ class SourceService(Service[AppCore]):
                 await self.core.db.proxy.insert_many(proxies, ordered=False)
 
         # Update checked_at
-        await self.core.db.source.set(id, {"checked_at": utc_now()})
+        await self.core.db.source.set(id, {"checked_at": utc()})
 
         return len(proxies)
 
@@ -124,7 +124,7 @@ class SourceService(Service[AppCore]):
     async def check_next(self) -> None:
         """Check the next source that needs checking."""
         source = await self.core.db.source.find_one(
-            {"$or": [{"checked_at": None}, {"checked_at": {"$lt": utc_now_offset(hours=-1)}}]},
+            {"$or": [{"checked_at": None}, {"checked_at": {"$lt": utc(hours=-1)}}]},
             "checked_at",
         )
         if source:

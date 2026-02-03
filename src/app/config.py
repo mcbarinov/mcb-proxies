@@ -2,7 +2,7 @@ from typing import Annotated
 
 from mm_base6 import BaseSettings, BaseState, Config, setting_field
 
-config = Config(openapi_tags=["source", "proxy"], ui_menu={"/bot": "bot", "/sources": "sources", "/proxies": "proxies"})
+config = Config(openapi_tags=["source", "proxy"], ui_menu={"/bot": "bot", "/sources": "sources", "/proxies": "proxies"})  # ty: ignore[missing-argument]  # pydantic-settings loads from env vars
 
 
 class Settings(BaseSettings):

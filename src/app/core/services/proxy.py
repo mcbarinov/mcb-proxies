@@ -7,7 +7,7 @@ from bson import ObjectId
 from mm_base6 import Service
 from mm_concurrency import async_mutex
 from mm_proxy import check_proxy_ip_via_public_services
-from mm_std import utc_now, utc_now_offset
+from mm_std import utc
 
 from app.core.db import Protocol, Proxy, Status
 from app.core.types import AppCore
@@ -37,7 +37,7 @@ class ProxyService(Service[AppCore]):
         # Then: oldest checked (more than 5 minutes ago)
         if len(proxies) < limit:
             proxies += await self.core.db.proxy.find(
-                {"checked_at": {"$lt": utc_now_offset(minutes=-5)}}, "checked_at", limit=limit - len(proxies)
+                {"checked_at": {"$lt": utc(minutes=-5)}}, "checked_at", limit=limit - len(proxies)
             )
 
         async with asyncio.TaskGroup() as tg:
@@ -56,9 +56,9 @@ class ProxyService(Service[AppCore]):
         await self.counter.record_operation()
 
         status = Status.OK if success else Status.DOWN
-        updated: dict[str, object] = {"status": status, "checked_at": utc_now(), "external_ip": external_ip}
+        updated: dict[str, object] = {"status": status, "checked_at": utc(), "external_ip": external_ip}
         if success:
-            updated["last_ok_at"] = utc_now()
+            updated["last_ok_at"] = utc()
         updated["check_history"] = ([success, *proxy.check_history])[:100]
 
         updated_proxy = await self.core.db.proxy.set_and_get(id, updated)
@@ -78,7 +78,7 @@ class ProxyService(Service[AppCore]):
         """Get proxies that were OK within live_last_ok_minutes."""
         query: dict[str, object] = {
             "status": Status.OK,
-            "last_ok_at": {"$gt": utc_now_offset(minutes=-1 * self.core.settings.live_last_ok_minutes)},
+            "last_ok_at": {"$gt": utc(minutes=-1 * self.core.settings.live_last_ok_minutes)},
         }
         if sources:
             query["source"] = {"$in": sources}

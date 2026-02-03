@@ -1,15 +1,16 @@
-from typing import override
+from typing import Any, override
 
 from markupsafe import Markup
-from mm_base6 import JinjaConfig
+from mm_base6 import BaseJinjaConfig
 
 from app.core.db import Protocol, Status
 from app.core.types import AppCore
 
 
-class AppJinjaConfig(JinjaConfig[AppCore]):
-    filters = {}
-    globals = {"Status": Status, "Protocol": Protocol}
+class JinjaConfig(BaseJinjaConfig[AppCore]):
+    @override
+    def get_globals(self) -> dict[str, Any]:
+        return {"Status": Status, "Protocol": Protocol}
 
     @override
     async def header_status(self) -> Markup:
